@@ -95,7 +95,7 @@ async function sendMessage(){
  statusText.textContent="● JARVIS THINKING...";
 
  try{
- const response=await fetch("/chat",{
+ fetch("https://jarvis-ai-backend-iaf3.onrender.com/chat",{
  method:"POST",
  headers:{
  "Content-Type":"application/json",
