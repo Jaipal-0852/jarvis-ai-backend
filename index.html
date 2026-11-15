@@ -1,1 +1,151 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>JARVIS 3.0</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080d18;color:#eaf6ff;
+ font-family:Arial,sans-serif;
+}
+header{padding:22px;text-align:center;border-bottom:1px solid #16334b}
+header h1{color:#39d5ff;letter-spacing:5px}
+header p{color:#8caabe}
+main{max-width:600px;margin:auto;padding:18px}
+.status{text-align:center;color:#35e7b1;margin:20px}
+.orb{
+ width:155px;height:155px;border-radius:50%;
+ margin:25px auto;border:3px solid #39d5ff;
+ box-shadow:0 0 35px #087eaa;
+ display:grid;place-items:center;
+ font-size:48px;color:#39d5ff;
+}
+#chat{
+ height:300px;overflow-y:auto;
+ background:#101a29;border-radius:15px;
+ padding:15px;margin:20px 0;
+}
+.msg{padding:12px;margin:10px 0;border-radius:12px;line-height:1.5}
+.user{background:#164567;text-align:right}
+.bot{background:#192c3d}
+input{
+ width:100%;padding:15px;margin:7px 0;
+ border-radius:9px;border:1px solid #28506b;
+ background:#101a29;color:white;
+}
+button{
+ padding:13px 17px;border:0;border-radius:9px;
+ background:#087fa9;color:white;font-weight:bold;
+ margin:5px;cursor:pointer
+}
+.controls{display:flex;flex-wrap:wrap;justify-content:center}
+#mic{background:#087f70}
+small{color:#8caabe}
+</style>
+</head>
+<body>
+<header>
+<h1>J.A.R.V.I.S</h1>
+<p>JUST A RATHER VERY INTELLIGENT SYSTEM</p>
+</header>
+<main>
+<div class="status" id="status">● SYSTEM ONLINE</div>
+<div class="orb">◉</div>
+<div id="chat">
+<div class="msg bot">Hello! I am JARVIS 3.0. How can I help you?</div>
+</div>
+
+<input id="token" type="password"
+placeholder="Enter your private JARVIS app token">
+<small>Your token stays in this browser session, not in GitHub.</small>
+
+<input id="message" placeholder="Ask JARVIS anything...">
+
+<div class="controls">
+<button onclick="sendMessage()">SEND</button>
+<button id="mic" onclick="listen()">🎙 SPEAK</button>
+<button onclick="speechSynthesis.cancel()">STOP VOICE</button>
+</div>
+</main>
+
+<script>
+const chat=document.getElementById("chat");
+const statusText=document.getElementById("status");
+
+function addMessage(text,type){
+ const div=document.createElement("div");
+ div.className="msg "+type;
+ div.textContent=text;
+ chat.appendChild(div);
+ chat.scrollTop=chat.scrollHeight;
+}
+
+async function sendMessage(){
+ const message=document.getElementById("message").value.trim();
+ const token=document.getElementById("token").value.trim();
+ if(!message)return;
+ if(!token){alert("Enter your private JARVIS app token.");return;}
+
+ addMessage(message,"user");
+ document.getElementById("message").value="";
+ statusText.textContent="● JARVIS THINKING...";
+
+ try{
+ const response=await fetch("/chat",{
+ method:"POST",
+ headers:{
+ "Content-Type":"application/json",
+ "Authorization":"Bearer "+token
+ },
+ body:JSON.stringify({message})
+ });
+ const data=await response.json();
+ if(!response.ok)throw new Error(data.error||"Request failed");
+ addMessage(data.reply,"bot");
+ statusText.textContent="● SYSTEM ONLINE";
+ speak(data.reply);
+ }catch(error){
+ addMessage("Connection error: "+error.message,"bot");
+ statusText.textContent="● CONNECTION ERROR";
+ }
+}
+
+function speak(text){
+ if("speechSynthesis" in window){
+ speechSynthesis.cancel();
+ const voice=new SpeechSynthesisUtterance(text);
+ voice.lang="en-IN";
+ voice.rate=1;
+ speechSynthesis.speak(voice);
+ }
+}
+
+function listen(){
+ const Recognition=window.SpeechRecognition||
+ window.webkitSpeechRecognition;
+ if(!Recognition){
+ alert("Speech recognition is not supported in this browser.");
+ return;
+ }
+ const recognition=new Recognition();
+ recognition.lang="en-IN";
+ recognition.onresult=(event)=>{
+ document.getElementById("message").value=
+ event.results[0][0].transcript;
+ sendMessage();
+ };
+ recognition.onerror=()=>alert("Microphone error. Check permission.");
+ recognition.start();
+}
+
+document.getElementById("message").addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendMessage();
+});
+</script>
+</body>
+</html>
+
