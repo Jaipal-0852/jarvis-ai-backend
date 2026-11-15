@@ -8,6 +8,12 @@
 <meta name="description" content="JARVIS 3.0 Personal AI Assistant">
 <link rel="manifest" href="manifest.webmanifest">
 <title>JARVIS 3.0</title>
+  
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
 
 <style>
 * {
@@ -387,6 +393,15 @@ document.getElementById("installBtn").addEventListener("click", async () => {
   deferredPrompt = null;
   document.getElementById("installBtn").hidden = true;
 });
+  
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("JARVIS PWA Ready"))
+      .catch(error => console.error(error));
+  });
+}
+  
 </script>
 
 </body>
