@@ -3,149 +3,391 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080d18">
+<meta name="description" content="JARVIS 3.0 Personal AI Assistant">
+<link rel="manifest" href="manifest.webmanifest">
 <title>JARVIS 3.0</title>
+
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;background:#080d18;color:#eaf6ff;
- font-family:Arial,sans-serif;
+* {
+  box-sizing: border-box;
 }
-header{padding:22px;text-align:center;border-bottom:1px solid #16334b}
-header h1{color:#39d5ff;letter-spacing:5px}
-header p{color:#8caabe}
-main{max-width:600px;margin:auto;padding:18px}
-.status{text-align:center;color:#35e7b1;margin:20px}
-.orb{
- width:155px;height:155px;border-radius:50%;
- margin:25px auto;border:3px solid #39d5ff;
- box-shadow:0 0 35px #087eaa;
- display:grid;place-items:center;
- font-size:48px;color:#39d5ff;
+
+body {
+  margin: 0;
+  background: #080d18;
+  color: #eaf6ff;
+  font-family: Arial, sans-serif;
 }
-#chat{
- height:300px;overflow-y:auto;
- background:#101a29;border-radius:15px;
- padding:15px;margin:20px 0;
+
+header {
+  text-align: center;
+  padding: 24px 12px;
+  border-bottom: 1px solid #263d5f;
 }
-.msg{padding:12px;margin:10px 0;border-radius:12px;line-height:1.5}
-.user{background:#164567;text-align:right}
-.bot{background:#192c3d}
-input{
- width:100%;padding:15px;margin:7px 0;
- border-radius:9px;border:1px solid #28506b;
- background:#101a29;color:white;
+
+header h1 {
+  color: #39d5ff;
+  letter-spacing: 5px;
+  margin: 5px;
 }
-button{
- padding:13px 17px;border:0;border-radius:9px;
- background:#087fa9;color:white;font-weight:bold;
- margin:5px;cursor:pointer
+
+header p {
+  color: #8caabe;
 }
-.controls{display:flex;flex-wrap:wrap;justify-content:center}
-#mic{background:#087f70}
-small{color:#8caabe}
+
+main {
+  max-width: 600px;
+  margin: auto;
+  padding: 18px;
+}
+
+.status {
+  text-align: center;
+  color: #35e7b1;
+  margin: 15px;
+}
+
+.orb {
+  width: 155px;
+  height: 155px;
+  border-radius: 50%;
+  margin: 25px auto;
+  border: 3px solid #39d5ff;
+  box-shadow: 0 0 35px #087eaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 65px;
+}
+
+h2 {
+  text-align: center;
+  color: #39d5ff;
+}
+
+.token-area {
+  margin: 15px 0;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  background: #101c2c;
+  color: white;
+  border: 1px solid #34516b;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+}
+
+#chat {
+  height: 300px;
+  overflow-y: auto;
+  padding: 12px;
+  background: #101725;
+  border: 1px solid #263d5f;
+  border-radius: 12px;
+}
+
+.msg {
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.user {
+  background: #123b59;
+  text-align: right;
+}
+
+.bot {
+  background: #17283b;
+  border: 1px solid #294b69;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+button {
+  padding: 14px 10px;
+  border: none;
+  border-radius: 10px;
+  background: #087eaa;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+}
+
+.send {
+  background: #087eaa;
+}
+
+.mic {
+  background: #087d65;
+}
+
+.stop {
+  background: #783344;
+}
+
+.install {
+  width: 100%;
+  margin-top: 12px;
+  background: #5136a5;
+}
+
+.footer {
+  text-align: center;
+  color: #7892a9;
+  font-size: 12px;
+  margin: 25px 0;
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>J.A.R.V.I.S</h1>
-<p>JUST A RATHER VERY INTELLIGENT SYSTEM</p>
+  <h1>JARVIS 3.0</h1>
+  <p>YOUR PERSONAL AI ASSISTANT</p>
 </header>
+
 <main>
-<div class="status" id="status">● SYSTEM ONLINE</div>
-<div class="orb">◉</div>
-<div id="chat">
-<div class="msg bot">Hello! I am JARVIS 3.0. How can I help you?</div>
-</div>
 
-<input id="token" type="password"
-placeholder="Enter your private JARVIS app token">
-<small>Your token stays in this browser session, not in GitHub.</small>
+  <div class="status" id="status">
+    ● JARVIS READY
+  </div>
 
-<input id="message" placeholder="Ask JARVIS anything...">
+  <div class="orb">🤖</div>
 
-<div class="controls">
-<button onclick="sendMessage()">SEND</button>
-<button id="mic" onclick="listen()">🎙 SPEAK</button>
-<button onclick="speechSynthesis.cancel()">STOP VOICE</button>
-</div>
+  <h2>How can I help you?</h2>
+
+  <div class="token-area">
+    <input
+      id="token"
+      type="password"
+      placeholder="Enter your private JARVIS app token"
+      autocomplete="off">
+  </div>
+
+  <div id="chat" aria-live="polite">
+    <div class="msg bot">
+      Hello! I am JARVIS 3.0. How may I assist you?
+    </div>
+  </div>
+
+  <br>
+
+  <input
+    id="message"
+    type="text"
+    placeholder="Ask JARVIS anything..."
+    autocomplete="off">
+
+  <div class="controls">
+    <button class="send" id="sendBtn"
+      onclick="sendMessage()">SEND</button>
+
+    <button class="mic"
+      onclick="listen()">🎙 SPEAK</button>
+
+    <button class="stop"
+      onclick="stopSpeaking()">STOP VOICE</button>
+
+    <button
+      onclick="clearChat()">CLEAR CHAT</button>
+  </div>
+
+  <button class="install" id="installBtn" hidden>
+    INSTALL JARVIS APP
+  </button>
+
+  <div class="footer">
+    JARVIS 3.0 | Powered by OpenAI
+  </div>
+
 </main>
 
 <script>
-const chat=document.getElementById("chat");
-const statusText=document.getElementById("status");
+const API_URL =
+  "https://jarvis-ai-backend-iaf3.onrender.com/chat";
 
-function addMessage(text,type){
- const div=document.createElement("div");
- div.className="msg "+type;
- div.textContent=text;
- chat.appendChild(div);
- chat.scrollTop=chat.scrollHeight;
+const chat = document.getElementById("chat");
+const statusText = document.getElementById("status");
+const messageInput = document.getElementById("message");
+const tokenInput = document.getElementById("token");
+const sendBtn = document.getElementById("sendBtn");
+
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 }
 
-async function sendMessage(){
- const message=document.getElementById("message").value.trim();
- const token=document.getElementById("token").value.trim();
- if(!message)return;
- if(!token){alert("Enter your private JARVIS app token.");return;}
+async function sendMessage() {
+  const message = messageInput.value.trim();
+  const token = tokenInput.value.trim();
 
- addMessage(message,"user");
- document.getElementById("message").value="";
- statusText.textContent="● JARVIS THINKING...";
+  if (!message) return;
 
- try{
- fetch("https://jarvis-ai-backend-iaf3.onrender.com/chat",{
- method:"POST",
- headers:{
- "Content-Type":"application/json",
- "Authorization":"Bearer "+token
- },
- body:JSON.stringify({message})
- });
- const data=await response.json();
- if(!response.ok)throw new Error(data.error||"Request failed");
- addMessage(data.reply,"bot");
- statusText.textContent="● SYSTEM ONLINE";
- speak(data.reply);
- }catch(error){
- addMessage("Connection error: "+error.message,"bot");
- statusText.textContent="● CONNECTION ERROR";
- }
+  if (!token) {
+    alert("Enter your private JARVIS app token.");
+    tokenInput.focus();
+    return;
+  }
+
+  addMessage(message, "user");
+  messageInput.value = "";
+
+  statusText.textContent = "● JARVIS THINKING...";
+  sendBtn.disabled = true;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({message: message})
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Request failed");
+    }
+
+    if (!data.reply) {
+      throw new Error("Empty AI response");
+    }
+
+    addMessage(data.reply, "bot");
+    statusText.textContent = "● JARVIS ONLINE";
+
+    speak(data.reply);
+
+  } catch (error) {
+    addMessage("Error: " + error.message, "bot");
+    statusText.textContent = "● CONNECTION ERROR";
+  } finally {
+    sendBtn.disabled = false;
+  }
 }
 
-function speak(text){
- if("speechSynthesis" in window){
- speechSynthesis.cancel();
- const voice=new SpeechSynthesisUtterance(text);
- voice.lang="en-IN";
- voice.rate=1;
- speechSynthesis.speak(voice);
- }
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+
+  speechSynthesis.cancel();
+
+  const voice = new SpeechSynthesisUtterance(text);
+  voice.lang = "en-IN";
+  voice.rate = 1;
+  voice.pitch = 1;
+
+  speechSynthesis.speak(voice);
 }
 
-function listen(){
- const Recognition=window.SpeechRecognition||
- window.webkitSpeechRecognition;
- if(!Recognition){
- alert("Speech recognition is not supported in this browser.");
- return;
- }
- const recognition=new Recognition();
- recognition.lang="en-IN";
- recognition.onresult=(event)=>{
- document.getElementById("message").value=
- event.results[0][0].transcript;
- sendMessage();
- };
- recognition.onerror=()=>alert("Microphone error. Check permission.");
- recognition.start();
+function stopSpeaking() {
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+  }
 }
 
-document.getElementById("message").addEventListener("keydown",e=>{
- if(e.key==="Enter")sendMessage();
+function listen() {
+  const Recognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!Recognition) {
+    alert("Speech recognition is not supported in this browser. Try Chrome.");
+    return;
+  }
+
+  const recognition = new Recognition();
+
+  recognition.lang = "en-IN";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    statusText.textContent = "● LISTENING...";
+  };
+
+  recognition.onresult = (event) => {
+    messageInput.value =
+      event.results[0][0].transcript;
+
+    sendMessage();
+  };
+
+  recognition.onerror = () => {
+    statusText.textContent = "● MICROPHONE ERROR";
+  };
+
+  recognition.onend = () => {
+    if (statusText.textContent === "● LISTENING...") {
+      statusText.textContent = "● JARVIS ONLINE";
+    }
+  };
+
+  recognition.start();
+}
+
+function clearChat() {
+  chat.innerHTML = "";
+  addMessage("Chat cleared. How can I help?", "bot");
+  stopSpeaking();
+}
+
+messageInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
+});
+
+// PWA service worker registration
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .catch(error => console.log("SW error:", error));
+  });
+}
+
+// Install app
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredPrompt = event;
+  document.getElementById("installBtn").hidden = false;
+});
+
+document.getElementById("installBtn").addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
+  document.getElementById("installBtn").hidden = true;
 });
 </script>
+
 </body>
 </html>
-
